@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Promosi Task Manager</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/toast.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="navbar">
+        <h2><i class="fas fa-tasks"></i> Dashboard Admin - Kelola Promosi</h2>
+        <div class="nav-links">
+            <a onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </div>
+    </div>
+    <div class="container">
+        <div class="welcome-banner">
+            <h2><i class="fas fa-crown"></i> Selamat Datang, Admin!</h2>
+            <p>Kelola user, kategori, grup, caption, media, dan lihat history tugas.</p>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab('users')"><i class="fas fa-users"></i> Users</button>
+            <button class="tab-btn" onclick="openTab('kategori')"><i class="fas fa-folder"></i> Kategori</button>
+            <button class="tab-btn" onclick="openTab('grup')"><i class="fas fa-link"></i> Grup</button>
+            <button class="tab-btn" onclick="openTab('caption')"><i class="fas fa-comment"></i> Caption</button>
+            <button class="tab-btn" onclick="openTab('media')"><i class="fas fa-image"></i> Media</button>
+            <button class="tab-btn" onclick="openTab('history')"><i class="fas fa-history"></i> History Tugas</button>
+        </div>
+
+        <!-- TAB USERS (BARU) -->
+        <div id="tabUsers" class="tab-pane active">
+            <div class="card">
+                <h3><i class="fas fa-user-plus"></i> Tambah User Baru</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-user"></i> Username</label>
+                    <input type="text" id="newUsername" placeholder="contoh: pekerja3">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-lock"></i> Password</label>
+                    <input type="password" id="newPassword" placeholder="********">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-user-tag"></i> Role</label>
+                    <select id="newRole">
+                        <option value="user">Pekerja (User)</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                </div>
+                <button onclick="addUser()"><i class="fas fa-plus"></i> Tambah User</button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-list"></i> Daftar Semua User</h3>
+                <div id="usersList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tabKategori" class="tab-pane">
+            <div class="card">
+                <h3><i class="fas fa-folder-plus"></i> Kelola Kategori</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-tag"></i> Nama Kategori Baru</label>
+                    <input type="text" id="newCategoryName" placeholder="Contoh: Genshin Impact">
+                    <button onclick="addCategory()"><i class="fas fa-plus"></i> Tambah Kategori</button>
+                </div>
+                <hr>
+                <h4><i class="fas fa-list"></i> Daftar Kategori</h4>
+                <div id="categoriesList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tabGrup" class="tab-pane">
+            <div class="card">
+                <h3><i class="fas fa-link"></i> Tambah Grup Baru</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-link"></i> Link Grup</label>
+                    <input type="text" id="groupLink" placeholder="https://facebook.com/groups/...">
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-folder"></i> Pilih Kategori</label>
+                    <select id="groupCategory"></select>
+                </div>
+                <button onclick="addGroup()"><i class="fas fa-plus"></i> Tambah Grup</button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-table-list"></i> Daftar Semua Grup</h3>
+                <div id="groupsList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tabCaption" class="tab-pane">
+            <div class="card">
+                <h3><i class="fas fa-comment-dots"></i> Tambah Caption Baru</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-pen"></i> Teks Caption</label>
+                    <textarea id="captionText" rows="5" style="width:100%"></textarea>
+                </div>
+                <button onclick="addCaption()"><i class="fas fa-plus"></i> Tambah Caption</button>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-table-list"></i> Daftar Caption</h3>
+                <div id="captionsList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tabMedia" class="tab-pane">
+            <div class="card">
+                <h3><i class="fas fa-upload"></i> Upload Gambar per Kategori</h3>
+                <div class="form-group">
+                    <label><i class="fas fa-folder"></i> Pilih Kategori</label>
+                    <select id="mediaCategory"></select>
+                </div>
+                <div class="form-group">
+                    <label><i class="fas fa-file-image"></i> Pilih File Gambar (JPG/PNG)</label>
+                    <input type="file" id="mediaFile" accept="image/*" onchange="previewImage(event)">
+                    <img id="imagePreview" class="image-preview" style="display:none">
+                </div>
+                <button onclick="uploadMedia()"><i class="fas fa-cloud-upload-alt"></i> Upload Gambar</button>
+                <div id="uploadStatus" style="margin-top:10px; font-weight:bold;"></div>
+            </div>
+            <div class="card">
+                <h3><i class="fas fa-images"></i> Daftar Media per Kategori</h3>
+                <div id="mediaList">Loading...</div>
+            </div>
+        </div>
+
+        <div id="tabHistory" class="tab-pane">
+            <div class="card">
+                <h3><i class="fas fa-history"></i> History Tugas User</h3>
+                
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-user"></i> Filter User</label>
+                        <select id="filterUser">
+                            <option value="all">Semua User</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-check-circle"></i> Filter Status</label>
+                        <select id="filterStatus">
+                            <option value="all">Semua Status</option>
+                            <option value="pending">⏳ Belum Selesai</option>
+                            <option value="done">✅ Sudah Selesai</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-calendar-alt"></i> Tanggal Mulai</label>
+                        <input type="date" id="filterDateStart">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label><i class="fas fa-calendar-alt"></i> Tanggal Selesai</label>
+                        <input type="date" id="filterDateEnd">
+                    </div>
+                    <div style="display: flex; align-items: flex-end;">
+                        <button onclick="loadHistory()" style="background-color: #007bff;"><i class="fas fa-filter"></i> Filter</button>
+                        <button onclick="resetHistoryFilter()" style="background-color: #6c757d; margin-left: 10px;"><i class="fas fa-undo"></i> Reset</button>
+                    </div>
+                </div>
+                
+                <div id="historySummary" style="background: #e9ecef; padding: 10px; border-radius: 5px; margin-bottom: 15px;">
+                    Loading...
+                </div>
+                
+                <div style="overflow-x: auto;">
+                    <table id="historyTable" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f2f2f2;">
+                                <th><i class="fas fa-hashtag"></i> ID</th>
+                                <th><i class="fas fa-user"></i> User</th>
+                                <th><i class="fas fa-users"></i> Grup</th>
+                                <th><i class="fas fa-comment"></i> Caption</th>
+                                <th><i class="fas fa-flag-checkered"></i> Status</th>
+                                <th><i class="fas fa-calendar-day"></i> Tanggal Diberi</th>
+                                <th><i class="fas fa-calendar-check"></i> Tanggal Selesai</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historyTableBody">
+                            <tr><td colspan="7">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+        <script src="../js/config.js"></script>
+    <script src="../js/supabase.js"></script>
+    <script src="../js/toast.js"></script>
+    <script src="../js/auth.js"></script>
+    <script src="../js/admin-users.js"></script>
+    <script src="../js/admin-category.js"></script>
+    <script src="../js/admin-group.js"></script>
+    <script src="../js/admin-caption.js"></script>
+    <script src="../js/admin-media.js"></script>
+    <script src="../js/admin-history.js"></script>
+    <script src="../js/task-generator.js"></script>
+    <script src="../js/main.js"></script>
+    <script>
+        // Proteksi halaman admin
+        const admin = checkSession();
+        if (!admin || admin.role !== 'admin') {
+            window.location.href = '../index.html';
+        } else {
+            loadAdminData();
+            loadUserFilter();
+            loadAllUsers();
+        }
+        
+        function openTab(tabName) {
+            const tabs = ['users', 'kategori', 'grup', 'caption', 'media', 'history'];
+            for (let i = 0; i < tabs.length; i++) {
+                const tab = tabs[i];
+                const pane = document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1));
+                if (pane) pane.classList.remove('active');
+            }
+            const activePane = document.getElementById('tab' + tabName.charAt(0).toUpperCase() + tabName.slice(1));
+            if (activePane) activePane.classList.add('active');
+            
+            const btns = document.querySelectorAll('.tab-btn');
+            for (let i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('active');
+            }
+            if (event && event.target) event.target.classList.add('active');
+        }
+        
+        // Fungsi test generate dari console
+        window.testGenerate = testGenerate;
+        window.generateDailyTasks = generateDailyTasks;
+        
+        console.log('✅ Task generator siap. Ketik generateDailyTasks() untuk menjalankan.');
+    </script>
+</body>
+</html>
